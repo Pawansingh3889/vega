@@ -17,6 +17,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   are the parts that earn their keep, are unchanged.
 
 ### Added
+- Added `scripts/check-links.py` to the gate to catch relative Markdown links that point to missing files.
 - **`LICENSE`: GNU AGPL-3.0.** The repository had no licence file, which meant
   nobody could legally use or contribute to it. AGPL rather than a permissive
   licence because Vega is a system of record for somebody's business, and the
