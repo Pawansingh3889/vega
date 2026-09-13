@@ -5,6 +5,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- The claim check no longer blocks work it was never meant to. It refused every
+  Dependabot pull request, because a bot does not write `Closes #<n>` and never
+  will, and it refused every pull request against an issue carrying no `lane:`
+  label. Lanes were an internal scheduling scheme that does not exist in this
+  repository, so a contributor could take a `good first issue`, finish it, open
+  a PR, and be told their issue "has no lane, so nobody owns it" followed by a
+  command to add a label that cannot be added. A dead end at the last step,
+  after the work was done. One PR per issue and the duplicate detection, which
+  are the parts that earn their keep, are unchanged.
+
 ### Added
 - **`LICENSE`: GNU AGPL-3.0.** The repository had no licence file, which meant
   nobody could legally use or contribute to it. AGPL rather than a permissive
