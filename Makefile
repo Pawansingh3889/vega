@@ -9,6 +9,7 @@ lint:
 	cd apps/api && uv run ruff check .
 	cd apps/api && uv run lint-imports
 	scripts/check-citations.py
+	scripts/check-links.py
 	scripts/check-reachable.py
 
 fmt:
