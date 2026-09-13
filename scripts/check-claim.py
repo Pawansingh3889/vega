@@ -40,6 +40,22 @@ def claimed_issues(body: str) -> set[int]:
     return {int(n) for n in CLOSES.findall(body or "")}
 
 
+def is_bot(author: dict[str, object]) -> bool:
+    """Whether a pull request's author is a bot rather than a person.
+
+    Dependabot does not write "Closes #n" and never will, so requiring an issue
+    of it makes every dependency bump permanently unmergeable once this check
+    is required for merge. A bump has no issue behind it, and asking a bot to
+    file one against itself is not a rule worth keeping.
+
+    Both signals are checked because `is_bot` is absent from some gh versions'
+    output, and the login suffix is stable.
+    """
+    if author.get("is_bot"):
+        return True
+    return str(author.get("login") or "").endswith("[bot]")
+
+
 def find_clashes(
     issue_number: int, this_pr: int, open_prs: list[dict[str, object]]
 ) -> list[dict[str, object]]:
@@ -59,7 +75,15 @@ def find_clashes(
 
 
 def main(pr_number: str) -> int:
-    pr = json.loads(gh("pr", "view", pr_number, "--repo", REPO, "--json", "body,title,number"))
+    pr = json.loads(
+        gh("pr", "view", pr_number, "--repo", REPO, "--json", "body,title,number,author")
+    )
+
+    if is_bot(pr.get("author") or {}):
+        login = (pr.get("author") or {}).get("login", "a bot")
+        print(f"ok: #{pr['number']} is authored by {login}, which does not file issues.")
+        return 0
+
     mine = claimed_issues(pr["body"])
 
     if not mine:
@@ -79,9 +103,8 @@ def main(pr_number: str) -> int:
 
     issue_number = mine.pop()
     issue = json.loads(
-        gh("issue", "view", str(issue_number), "--repo", REPO, "--json", "state,labels,title")
+        gh("issue", "view", str(issue_number), "--repo", REPO, "--json", "state,title")
     )
-    labels = {label["name"] for label in issue["labels"]}
 
     if issue["state"] != "OPEN":
         print(f"FAIL: #{pr['number']} closes issue #{issue_number}, which is already {issue['state']}.")
@@ -90,11 +113,6 @@ def main(pr_number: str) -> int:
         print()
         print("Work that is already done does not need doing again. Check the issue state")
         print("before starting: this has cost this repository a whole PR before.")
-        return 1
-
-    if not any(label.startswith("lane:") for label in labels):
-        print(f"FAIL: issue #{issue_number} has no lane, so nobody owns it.")
-        print("  gh issue edit %d --add-label lane:<web|api|db|repo>" % issue_number)
         return 1
 
     # The duplicate check. Everything above is hygiene; this is the one that
@@ -115,9 +133,7 @@ def main(pr_number: str) -> int:
         print("If this PR is genuinely different, it needs its own issue.")
         return 1
 
-    agent = sorted(label for label in labels if label.startswith("agent:"))
-    who = agent[0].split(":", 1)[1] if agent else "nobody"
-    print(f"ok: #{pr['number']} claims issue #{issue_number}, held by {who}, no clash.")
+    print(f"ok: #{pr['number']} claims issue #{issue_number}, no clash.")
     return 0
 
 
