@@ -1,0 +1,69 @@
+# Vega API on Fly.io.
+#
+# London (lhr), which is the same city as the Supabase project in eu-west-2.
+# Different clouds, same city: fine at this scale, and a reason the connection
+# pool is bounded rather than left to grow.
+
+app = "vega-api"
+primary_region = "lhr"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[processes]
+  # Two processes, two connection modes, and that distinction is load-bearing.
+  #
+  # The API takes the TRANSACTION pooler (6543), which is right for short
+  # request-scoped work.
+  #
+  # The worker takes the SESSION pooler (5432), because Procrastinate wakes on
+  # LISTEN/NOTIFY and that does not survive transaction mode. Point the worker
+  # at 6543 and jobs still run, but only when the poll interval comes round,
+  # which reads as "sluggish" rather than "broken" and goes undiagnosed for a
+  # week. See ARCHITECTURE.md section 6.
+  api = "uvicorn vega_api.app:create_app --factory --host 0.0.0.0 --port 8080"
+  worker = "procrastinate --app vega_api.tasks.app worker"
+
+[env]
+  # Direct connections to db.<ref>.supabase.co are IPv6-only without the IPv4
+  # add-on and were unreachable when tested. The session pooler is the route.
+  VEGA_WORKER_POOLER_PORT = "5432"
+  VEGA_API_POOLER_PORT = "6543"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  # Zero would mean a cold start on the first request of the day. One machine
+  # awake is a few pounds a month against an endpoint that files tax returns.
+  # Zero while nothing calls the API. Nothing can: the web app's CSP does not
+  # yet name this origin, and no screen invokes the VAT endpoint. Raise it to 1
+  # when Phase 3 wires the browser to it, so the first request of the day is not
+  # a cold start on something that files tax returns.
+  min_machines_running = 0
+  processes = ["api"]
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 40
+    hard_limit = 60
+
+  # /health deliberately does not touch the database: a health check that fails
+  # on a slow query takes the service out of rotation for the wrong reason.
+  [[http_service.checks]]
+    grace_period = "20s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+  processes = ["api"]
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+  processes = ["worker"]

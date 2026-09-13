@@ -1,0 +1,15 @@
+packages:
+  - "apps/web"
+
+# pnpm 11 blocks dependency build scripts unless allowed here. esbuild's
+# postinstall places the platform binary; nothing else in the tree needs one.
+allowBuilds:
+  esbuild: true
+
+# Advisories the audit gate passes over. Never edit this list on its own: every
+# entry must also exist in security/audit-waivers.json with a reason, an owner
+# and an expiry, and scripts/check_audit_waivers.py fails CI when the two
+# disagree. See security/README.md.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-82fw-gwwq-j7x9

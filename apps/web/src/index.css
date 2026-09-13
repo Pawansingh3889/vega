@@ -1,0 +1,455 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Professional ERP Color Palette - Enhanced */
+    --background: 220 17% 97%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    
+    /* Primary - Rigel Navy Blue (Professional) */
+    --primary: 217 91% 35%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 217 91% 45%;
+    --primary-light: 217 91% 96%;
+    
+    /* Chart Colors for Rigel Teal Gradient */
+    --chart-1: 217 91% 45%;
+    --chart-2: 188 94% 40%;
+    --chart-3: 210 100% 60%;
+    --chart-4: 195 100% 50%;
+    --chart-5: 175 85% 45%;
+    
+    /* Secondary - Sophisticated Blue-Gray */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --secondary-hover: 210 40% 92%;
+    --secondary-light: 210 40% 98%;
+    
+    /* Accent - Professional Teal */
+    --accent: 188 94% 35%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 188 94% 45%;
+    --accent-light: 188 94% 96%;
+    
+    /* Status Colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Neutral Colors */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 35%;
+    
+    /* Professional Gradients - Rigel Theme */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 40%), hsl(188 94% 35%));
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(220 17% 98%));
+    --gradient-hero: linear-gradient(135deg, hsl(217 91% 35%) 0%, hsl(188 94% 35%) 50%, hsl(210 100% 60%) 100%);
+    
+    /* Professional Shadows with Primary Color */
+    --shadow-card: 0 1px 3px 0 hsl(217 91% 35% / 0.1), 0 1px 2px -1px hsl(217 91% 35% / 0.1);
+    --shadow-elevated: 0 10px 15px -3px hsl(217 91% 35% / 0.15), 0 4px 6px -4px hsl(217 91% 35% / 0.1);
+    --shadow-glow: 0 0 40px -10px hsl(217 91% 45% / 0.4);
+    
+    --radius: 0.75rem;
+    
+    /* Sidebar Colors */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 217 91% 35%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 217 91% 35%;
+  }
+
+  .dark {
+    /* Dark Mode Professional Colors - Enhanced */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 14%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 14%;
+    --popover-foreground: 210 40% 98%;
+    
+    /* Primary - Refined Blue for Dark */
+    --primary: 217 91% 55%;
+    --primary-foreground: 222 47% 11%;
+    --primary-hover: 217 91% 65%;
+    --primary-light: 217 91% 20%;
+    
+    /* Chart Colors for Dark Mode */
+    --chart-1: 217 91% 55%;
+    --chart-2: 188 94% 50%;
+    --chart-3: 210 100% 65%;
+    --chart-4: 195 100% 55%;
+    --chart-5: 175 85% 50%;
+    
+    /* Secondary - Balanced Gray */
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --secondary-hover: 217 33% 22%;
+    --secondary-light: 217 33% 12%;
+    
+    /* Accent - Professional Teal */
+    --accent: 188 94% 45%;
+    --accent-foreground: 222 47% 11%;
+    --accent-hover: 188 94% 55%;
+    --accent-light: 188 94% 20%;
+    
+    /* Status Colors */
+    --success: 142 76% 36%;
+    --success-foreground: 210 40% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 47% 11%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+    
+    /* Neutral Colors */
+    --muted: 215 28% 17%;
+    --muted-foreground: 217 11% 65%;
+    --border: 217 33% 22%;
+    --input: 217 33% 22%;
+    --ring: 217 91% 55%;
+    
+    /* Dark Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 55%), hsl(188 94% 45%));
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
+    --gradient-card: linear-gradient(145deg, hsl(222 47% 14%), hsl(215 28% 17%));
+    --gradient-hero: linear-gradient(135deg, hsl(217 91% 35%) 0%, hsl(188 94% 35%) 50%, hsl(210 100% 60%) 100%);
+    
+    /* Dark Shadows */
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.2);
+    --shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 40px -10px hsl(217 91% 55% / 0.5);
+    
+    /* Sidebar Colors */
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217 91% 55%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 215 28% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 22%;
+    --sidebar-ring: 217 91% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Professional Typography */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+  
+  h1 { @apply text-3xl lg:text-4xl; }
+  h2 { @apply text-2xl lg:text-3xl; }
+  h3 { @apply text-xl lg:text-2xl; }
+  h4 { @apply text-lg lg:text-xl; }
+  h5 { @apply text-base lg:text-lg; }
+  h6 { @apply text-sm lg:text-base; }
+}
+
+@layer components {
+  /* Background Pattern */
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  
+  /* Hover Scale Animation */
+  .hover-scale {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  .hover-scale:hover {
+    @apply scale-[1.02];
+  }
+  
+  /* Professional Card Variants */
+  .card-elevated {
+    @apply bg-gradient-to-br from-card to-muted/30 border-0;
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  .card-interactive {
+    @apply transition-all duration-300 hover:-translate-y-1 cursor-pointer;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .card-interactive:hover {
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  /* Status Indicators */
+  .status-success {
+    @apply bg-success/10 text-success border-success/20;
+  }
+  
+  .status-warning {
+    @apply bg-warning/10 text-warning border-warning/20;
+  }
+  
+  .status-error {
+    @apply bg-destructive/10 text-destructive border-destructive/20;
+  }
+  
+  /* Professional Buttons */
+  .btn-gradient {
+    background: var(--gradient-primary);
+    @apply text-white border-0 transition-all duration-300;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .btn-gradient:hover {
+    @apply -translate-y-0.5;
+    box-shadow: var(--shadow-elevated), var(--shadow-glow);
+  }
+  
+  .btn-refined {
+    @apply bg-primary/90 hover:bg-primary text-primary-foreground transition-all duration-200 border-0;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .btn-refined:hover {
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  .btn-subtle {
+    @apply bg-primary/5 hover:bg-primary/10 text-primary border border-primary/20 transition-all duration-200 hover:border-primary/30;
+  }
+  
+  .btn-success {
+    @apply bg-success/90 hover:bg-success text-success-foreground transition-all duration-200;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .btn-success:hover {
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  .btn-warning {
+    @apply bg-warning/90 hover:bg-warning text-warning-foreground transition-all duration-200;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .btn-warning:hover {
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  /* Layout Utilities */
+  .section-padding {
+    @apply px-4 py-6 sm:px-6 lg:px-8;
+  }
+  
+  .content-container {
+    @apply max-w-7xl mx-auto;
+  }
+  
+  /* Animation Classes */
+  .animate-fade-up {
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+  }
+  
+  .stagger-animation > * {
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+  
+  .stagger-animation > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-animation > *:nth-child(2) { animation-delay: 100ms; }
+  .stagger-animation > *:nth-child(3) { animation-delay: 200ms; }
+  .stagger-animation > *:nth-child(4) { animation-delay: 300ms; }
+  .stagger-animation > *:nth-child(5) { animation-delay: 400ms; }
+  
+  /* Professional Text Gradient */
+  .gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Hover Lift Effect */
+  .hover-lift {
+    @apply transition-all duration-300;
+  }
+  
+  .hover-lift:hover {
+    @apply -translate-y-1;
+    box-shadow: var(--shadow-elevated);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.6s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+/* Mobile Optimization Utilities */
+.mobile-card-layout {
+  @apply p-4 space-y-3;
+}
+
+.mobile-card-header {
+  @apply flex items-start justify-between gap-3 min-w-0;
+}
+
+.mobile-card-content {
+  @apply flex-1 min-w-0 space-y-1;
+}
+
+.mobile-card-title {
+  @apply font-semibold text-base truncate;
+}
+
+.mobile-card-subtitle {
+  @apply text-sm text-muted-foreground truncate;
+}
+
+.mobile-card-actions {
+  @apply flex items-center gap-1 flex-shrink-0;
+}
+
+.mobile-detail-row {
+  @apply flex justify-between items-start gap-2 text-sm;
+}
+
+.mobile-detail-label {
+  @apply text-muted-foreground flex-shrink-0;
+}
+
+.mobile-detail-value {
+  @apply text-right truncate min-w-0;
+}
+
+.mobile-touch-target {
+  @apply min-h-[44px] min-w-[44px];
+}
+
+/* Text truncation helpers */
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Print styles for dashboard export */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-break {
+    page-break-after: always;
+  }
+  
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  
+  /* Hide navigation, buttons, etc */
+  nav,
+  button:not(.print-button),
+  .fab,
+  .sidebar,
+  header,
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Optimize cards for printing */
+  .card {
+    border: 1px solid #e5e7eb;
+    page-break-inside: avoid;
+    box-shadow: none;
+  }
+  
+  /* Remove backgrounds for better printing */
+  * {
+    background: white !important;
+  }
+  
+  /* Ensure text is black for print */
+  body,
+  p,
+  span,
+  div {
+    color: black !important;
+  }
+}

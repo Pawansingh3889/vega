@@ -1,0 +1,133 @@
+[project]
+name = "vega-api"
+version = "0.0.0"
+license = "AGPL-3.0-only"
+description = "Vega's regulated-logic service: VAT, e-invoicing, carbon, and scheduled work"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.115",
+    "sqlalchemy[asyncio]>=2.0",
+    "asyncpg>=0.30",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    # ES256 verification against Supabase's JWKS. The project issues asymmetric
+    # tokens, so the service holds a public key and never a shared secret.
+    "pyjwt[crypto]>=2.9",
+    # Declared directly, though pyjwt[crypto] already pulls it in. The HMRC
+    # refresh tokens are encrypted with it (#109 q3), and a dependency that
+    # arrives by accident is one that can leave by accident.
+    "cryptography>=44",
+    "httpx>=0.27",
+    "uvicorn[standard]>=0.32",
+    # Postgres-backed jobs: retries and scheduling without Redis.
+    "procrastinate>=3.0",
+    # Procrastinate speaks psycopg, not asyncpg. The binary build avoids
+    # needing libpq present on the host or in the deploy image.
+    "psycopg[binary,pool]>=3.2",
+    # SECURITY.md N4: all inbound XML is hostile. stdlib ElementTree is still
+    # vulnerable to entity expansion; defusedxml refuses it outright.
+    "defusedxml>=0.7",
+    "weasyprint>=69.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.7",
+    "mypy>=1.13",
+    # CLAUDE.md says service.py is pure and that this is enforced by tooling
+    # rather than review. Until this landed it was not: three modules in a row
+    # put the HTTP call in service.py, each with a pure one in front of them as
+    # the example. See the contracts below.
+    "import-linter>=2.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vega_api"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "A", "C4", "SIM", "RUF"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+
+# asyncpg ships no py.typed marker and no stubs. This is the external-library
+# gap the house rule allows, not a way to quieten our own code: strict stays on
+# everywhere else, and the override is scoped to the import.
+[[tool.mypy.overrides]]
+module = "asyncpg.*"
+ignore_missing_imports = true
+
+# defusedxml ships no py.typed marker. Same external-library gap as asyncpg,
+# scoped to the import rather than loosening anything of ours.
+[[tool.mypy.overrides]]
+module = "defusedxml.*"
+ignore_missing_imports = true
+
+
+# weasyprint ships no py.typed marker. Same external-library gap as asyncpg
+# and defusedxml, scoped to the import rather than loosening anything of ours.
+[[tool.mypy.overrides]]
+module = "weasyprint.*"
+ignore_missing_imports = true
+
+
+# Layering, enforced. `make lint` and CI both run `lint-imports`.
+#
+# The rule these encode is the four-file module contract: contract.py holds
+# types, service.py holds logic and is pure, repository.py does the I/O, and
+# __init__.py wires them together. A service that reaches the network or the
+# database cannot be tested without one, and a rule that lives only in a
+# document gets broken by the next person who has not read it.
+[tool.importlinter]
+root_package = "vega_api"
+# httpx and asyncpg are third-party, and a forbidden contract cannot see them
+# without this. Without it the network half of the rule silently does nothing.
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "service.py is pure: no network, no database, no repository"
+type = "forbidden"
+source_modules = ["vega_api.modules.*.service"]
+forbidden_modules = [
+    "vega_api.modules.*.repository",
+    "vega_api.common.db",
+    "httpx",
+    "asyncpg",
+    "sqlalchemy",
+    "psycopg",
+    "procrastinate",
+]
+
+[[tool.importlinter.contracts]]
+name = "modules do not reach into each other"
+type = "independence"
+modules = [
+    "vega_api.modules.einvoice",
+    "vega_api.modules.fx",
+    "vega_api.modules.hmrc",
+    "vega_api.modules.postcode",
+    "vega_api.modules.vat",
+    "vega_api.modules.vies",
+]
+
+[dependency-groups]
+dev = [
+    "import-linter>=2.0",
+]

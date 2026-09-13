@@ -1,0 +1,22 @@
+# Response headers. The directives below are HEADER-ONLY: a browser ignores
+# frame-ancestors and X-Frame-Options when they appear in a <meta> tag, which is
+# where the inherited index.html put them. The page looked protected against
+# clickjacking and was not.
+#
+# connect-src carries the Supabase project and the FastAPI service on Fly
+# (https://vega-api.fly.dev). The dev server adds http://localhost:8000 via its
+# CSP response header so a locally running API is reachable; see
+# apps/web/vite.config.ts. The page cannot call an origin this list does not
+# name, and the browser refuses it silently.
+#
+# This file is the Netlify and Cloudflare Pages format. Fly.io needs the same
+# headers set in fly.toml or by the server; whichever host is chosen in Phase 2's
+# deploy step must carry these or the protection is decorative again.
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://kscgvfzzzbmqohuuiiab.supabase.co wss://kscgvfzzzbmqohuuiiab.supabase.co https://vega-api.fly.dev; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains

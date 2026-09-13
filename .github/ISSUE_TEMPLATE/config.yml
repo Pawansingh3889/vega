@@ -1,0 +1,15 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Question, or just saying hello
+    url: https://github.com/Pawansingh3889/vega/discussions
+    about: Discussions is the right place to ask anything. No issue needed, and no question is too small.
+  - name: Security vulnerability
+    url: https://github.com/Pawansingh3889/vega/security/advisories/new
+    about: Report privately. Never in a public issue.
+  - name: Question about the domain
+    url: https://github.com/Pawansingh3889/vega/blob/main/SPEC.md
+    about: VAT treatments, currency, traceability and the EU regimes are specified in SPEC.md.
+  - name: How to contribute
+    url: https://github.com/Pawansingh3889/vega/blob/main/CONTRIBUTING.md
+    about: Setup, the gate, and how issues are picked up. Start with a good first issue.

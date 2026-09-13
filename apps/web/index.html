@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vega</title>
+    <meta name="description" content="Vega: batch-traceable operations for small UK food manufacturers." />
+    <meta name="author" content="Vega" />
+    
+    <!-- Security Headers via Meta Tags (Note: Some headers should be set server-side) -->
+    <!--
+      Content Security Policy.
+
+      THREE THINGS WERE WRONG IN THE INHERITED VERSION, and the third is not a typo:
+
+      1. connect-src named the OLD Rigel project, so this app could not reach
+         Vega's Supabase at all.
+      2. script-src allowed https://esm.sh and https://cdn.jsdelivr.net plus
+         'unsafe-eval'. Nothing here loads from either CDN, and a script-src a
+         page does not use is an open door with nothing behind it.
+      3. frame-ancestors and X-Frame-Options were set in <meta>, WHERE BROWSERS
+         IGNORE THEM. Both are header-only directives. The page looked protected
+         against clickjacking and was not. They are kept below for the CSP
+         reporting tools that read meta, but the real protection has to come from
+         a response header at the host: see apps/web/public/_headers.
+
+      connect-src carries the Supabase project and the Vega API (the FastAPI
+      service on Fly; scripts/deploy-api.sh prints the same origin). The dev
+      server adds http://localhost:8000 via its CSP response header so a
+      locally running API is reachable; see vite.config.ts.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://kscgvfzzzbmqohuuiiab.supabase.co wss://kscgvfzzzbmqohuuiiab.supabase.co https://vega-api.fly.dev; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
+    
+    <!-- Optional: Cloudflare Turnstile site key (public). Set this to enable captcha: -->
+    <meta name="turnstile-sitekey" content="" />
+
+    
+    
+    <meta property="og:type" content="website" />
+    
+
+    <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta property="og:title" content="Vega" />
+  <meta name="twitter:title" content="Vega" />
+  <meta property="og:description" content="Vega: batch-traceable operations for small UK food manufacturers." />
+  <meta name="twitter:description" content="Vega: batch-traceable operations for small UK food manufacturers." />
+</head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

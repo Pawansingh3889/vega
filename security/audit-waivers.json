@@ -1,0 +1,20 @@
+{
+  "$comment": [
+    "Advisories the dependency gate is allowed to pass over, and only these.",
+    "Policy and process live in security/README.md. Every entry is dated and",
+    "expires; scripts/check_audit_waivers.py fails CI when one does.",
+    "Each entry must also appear in auditConfig.ignoreGhsas in",
+    "pnpm-workspace.yaml, and the checker fails when the two disagree."
+  ],
+  "waivers": [
+    {
+      "ghsa": "GHSA-82fw-gwwq-j7x9",
+      "package": "vitest, and @vitest/mocker transitively",
+      "severity": "moderate",
+      "reason": "Path traversal in @vitest/mocker's redirect mock, reachable only by a test file that already executes with full developer privileges in this repository, so it grants an attacker nothing they would not already have. Not in any shipped bundle: vitest is a devDependency of apps/web and never reaches a build artefact. The fix is vitest >=4.1.11 and we are on ^3.2.7, so it is a major upgrade rather than a patch, tracked separately. Waived so that `make gate` passes on a clean checkout, which CONTRIBUTING.md promises a new contributor.",
+      "granted": "2026-09-12",
+      "expires": "2026-12-11",
+      "owner": "Pawansingh3889"
+    }
+  ]
+}

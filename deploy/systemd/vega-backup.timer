@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily dump of Vega's London database
+
+[Timer]
+OnCalendar=*-*-* 02:30:00 UTC
+# Catch up after the machine was off. A missed day is a day with no copy.
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

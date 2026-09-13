@@ -1,0 +1,15 @@
+[Unit]
+Description=Dump Vega's London database to this machine
+Documentation=https://github.com/Pawansingh3889/vega/blob/main/scripts/backup-dump.sh
+
+[Service]
+Type=oneshot
+# The connection string lives here, mode 600, written by
+# scripts/install-backup-timer.sh. It is never in the unit and never in git.
+EnvironmentFile=%h/.config/vega/backup.env
+ExecStart=%h/projects/vega/scripts/backup-dump.sh
+# A backup job that fails quietly is indistinguishable from one that never ran,
+# which is the whole failure this unit exists to prevent. Journal it at error
+# level and let the maintainer's sweep script report the age of the newest dump.
+StandardOutput=journal
+StandardError=journal

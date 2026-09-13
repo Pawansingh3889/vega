@@ -1,0 +1,10 @@
+[Unit]
+Description=Restart the Vega FX worker if it has stopped talking to the database
+Documentation=https://github.com/Pawansingh3889/vega/blob/main/scripts/fx-worker-watchdog.sh
+After=network-online.target
+
+[Service]
+Type=oneshot
+# %h rather than a hardcoded path: this is a user unit and the repo lives in the
+# user's home. The installer refuses if the path is wrong rather than guessing.
+ExecStart=%h/projects/vega/scripts/fx-worker-watchdog.sh

@@ -1,0 +1,50 @@
+# Podman Quadlet unit for the Vega job worker.
+#
+# WHY NOT `podman run --restart unless-stopped`. That policy is honoured by
+# podman while podman is running. It does not survive a reboot on its own: that
+# needs either the podman-restart service enabled, or systemd owning the
+# container. Right now neither is true, so the "restart" policy on the running
+# worker is decorative.
+#
+# Install (per user, no root):
+#   mkdir -p ~/.config/containers/systemd
+#   cp deploy/systemd/vega-worker.container ~/.config/containers/systemd/
+#   systemctl --user daemon-reload
+#   systemctl --user start vega-worker
+#
+# ONE COMMAND NEEDS YOUR AUTHORISATION, because a user service is killed at
+# logout unless lingering is on:
+#   loginctl enable-linger $USER
+#
+# Without that, this survives a terminal closing but not a logout or a reboot,
+# which is the case it exists for.
+
+[Unit]
+Description=Vega job worker: daily ECB FX ingestion
+Documentation=https://github.com/Pawansingh3889/vega/blob/main/ARCHITECTURE.md
+After=network-online.target
+
+[Container]
+Image=localhost/vega-api:worker
+Exec=procrastinate --app vega_api.tasks.app worker
+
+# The worker needs the SESSION pooler on 5432. Procrastinate wakes on
+# LISTEN/NOTIFY and that does not survive the transaction pooler on 6543: jobs
+# would still run, but only on the poll interval, which reads as "sluggish"
+# rather than "broken" and goes undiagnosed for a week.
+EnvironmentFile=%h/.config/vega/worker.env
+
+Network=host
+# Nothing here needs to write to its own image.
+ReadOnly=true
+NoNewPrivileges=true
+
+[Service]
+Restart=always
+RestartSec=30
+# A worker that cannot reach the database at boot should keep trying rather than
+# give up after the default burst.
+StartLimitBurst=0
+
+[Install]
+WantedBy=default.target

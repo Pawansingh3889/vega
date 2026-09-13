@@ -1,0 +1,9 @@
+# Everything, by default.
+*                       @Pawansingh3889
+
+# The schema and the security rules are where a mistake is expensive and
+# hardest to reverse, so they always get a look.
+/supabase/migrations/   @Pawansingh3889
+/SECURITY.md            @Pawansingh3889
+/SPEC.md                @Pawansingh3889
+/.github/workflows/     @Pawansingh3889

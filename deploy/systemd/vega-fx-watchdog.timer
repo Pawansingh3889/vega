@@ -1,0 +1,13 @@
+[Unit]
+Description=Check the Vega FX worker heartbeat every 15 minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=15min
+# Not Persistent. Unlike the backup, there is nothing to catch up on: a check
+# that did not run while the machine was off tells you nothing about now, and
+# firing a burst of them at boot only restarts a worker that is still starting.
+Persistent=false
+
+[Install]
+WantedBy=timers.target

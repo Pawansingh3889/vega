@@ -1,0 +1,17 @@
+{
+  "name": "vega",
+  "private": true,
+  "version": "0.0.0",
+  "license": "AGPL-3.0-only",
+  "packageManager": "pnpm@11.22.0",
+  "scripts": {
+    "dev": "pnpm --filter @vega/web dev",
+    "build": "pnpm --filter @vega/web build",
+    "typecheck": "pnpm --filter @vega/web typecheck",
+    "lint": "pnpm --filter @vega/web lint",
+    "audit": "pnpm audit --audit-level moderate"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

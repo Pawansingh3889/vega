@@ -1,0 +1,46 @@
+# Environment. Note the bare .env: the upstream fork ignores only .env.local,
+# which is how a secret reaches a public repository.
+.env
+.env.*
+!.env.example
+
+# Supabase CLI local state, including start-secrets
+supabase/.temp/
+supabase/.branches/
+
+# Node
+# One lockfile, at the workspace root. An inner apps/web/pnpm-lock.yaml is an
+# artifact of running pnpm from that directory; pnpm ignores it, so it drifts
+# silently and shows up as noise in every diff.
+apps/web/pnpm-lock.yaml
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Data snapshots, never committed
+.local-dump/
+*.dump
+*.sql.gz
+
+# Each checkout's own container-name and port identity, so two checkouts do not
+# tear down each other's test databases. Local to the checkout, never shared.
+.vega-worktree-id
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/
+
+# Editor and assistant scratch files. Local to whoever is driving the tool.
+.aider*
+.kilo/
+.devin/

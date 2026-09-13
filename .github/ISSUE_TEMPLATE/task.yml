@@ -1,0 +1,43 @@
+name: Task
+description: A piece of work someone can pick up
+title: "[Task] "
+labels: []
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why this is worth doing. Link the file, migration or SECURITY.md rule it relates to.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How someone knows they are finished. Be concrete enough to disagree with.
+      placeholder: |
+        - [ ] make gate passes
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Database and migrations
+        - API service
+        - Web app
+        - Tooling and CI
+        - Documentation
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: design
+    attributes:
+      label: Does the shape need agreeing first?
+      options:
+        - label: Yes, post an approach in the issue before building

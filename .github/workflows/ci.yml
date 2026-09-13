@@ -1,0 +1,169 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Two independent jobs rather than one, so a Python failure does not hide a
+# TypeScript one and the slower install does not gate the faster feedback.
+jobs:
+  web:
+    # The name is a required status check on main. Renaming it makes every
+    # pull request wait forever on a check that no longer reports, so it
+    # stays as it is even though this job now runs tests too. Changing it
+    # means updating branch protection in the same breath.
+    name: web (lint, typecheck, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # --max-warnings is pinned in apps/web/package.json to the inherited debt
+      # count. It can only go down. See eslint.config.js for why.
+      - run: pnpm --filter @vega/web run lint
+
+      # tsconfig.json is a solution-style config with "files": [], so a bare
+      # `tsc --noEmit` against it compiles nothing. The script targets
+      # tsconfig.app.json for that reason. Do not "simplify" it.
+      - run: pnpm --filter @vega/web run typecheck
+
+      - run: pnpm --filter @vega/web run build
+
+      # vitest. The fraud prevention header collector is the first thing in
+      # apps/web with tests: its output is checked against the regexes read
+      # straight out of the Python validator, so the two cannot drift.
+      - run: pnpm --filter @vega/web run test
+
+      # Edge functions are Deno TypeScript running on Supabase, so they sit
+      # outside tsc, outside pytest and outside db-verify. Three of them were
+      # left naming columns the UK migrations renamed, sign-in among them, and
+      # every gate stayed green.
+      - name: edge functions reference columns that exist
+        run: python3 scripts/check-edge-function-columns.py
+
+      # Two branches both writing 0018_ each pass their own gate; only a check
+      # that sees both branches merged catches it.
+      - name: migration filenames order unambiguously
+        run: python3 scripts/check-migrations.py
+
+      # Never fails. --max-warnings bounds the total, so without this someone can
+      # fix ten warnings, add ten more, and the gate stays green while the debt
+      # changes shape unseen.
+      - name: eslint debt breakdown
+        run: node scripts/lint-debt.mjs
+
+  claim:
+    name: claim (one PR per issue)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    # The default token cannot read pull requests or issues unless asked. The
+    # first run of this job failed on exactly that, so these are the minimum
+    # the check needs and nothing more.
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+    steps:
+      - uses: actions/checkout@v7
+
+      # Parallel work that does not coordinate. One day produced four
+      # duplicates, the worst being three separate implementations of one issue.
+      # Reading the board first is a habit that does not survive on its own.
+      - run: scripts/check-claim.py "${{ github.event.pull_request.number }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  api:
+    name: api (ruff, mypy, pytest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - run: uv sync --extra dev --frozen
+
+      - run: uv run ruff check .
+
+      # The four-file module contract: service.py is pure. CLAUDE.md said this
+      # was enforced before anything enforced it, and three modules broke it.
+      - run: uv run lint-imports
+
+      # Every SECURITY.md / SPEC.md / ADR reference must resolve, and every
+      # module must be reachable from app.py or tasks.py. Both catch things
+      # that compile, type-check and pass their own tests while being wrong.
+      - run: ../../scripts/check-citations.py
+
+      - run: ../../scripts/check-reachable.py
+
+      - run: uv run ruff format --check .
+
+      - run: uv run mypy
+
+      # VEGA_REQUIRE_DB turns a missing container runtime into a failure. The
+      # tenant isolation suite is the only thing that proves the RLS boundary,
+      # and a suite that can silently not run is not a gate.
+      - name: tests, including the tenant isolation suite
+        env:
+          VEGA_REQUIRE_DB: "1"
+        run: uv run pytest -q
+
+  dependencies:
+    name: dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Runs before the audit: an expired waiver must fail the build even when
+      # the advisory it covered has since been fixed, because that is what forces
+      # the monthly review to happen.
+      - name: audit waivers are current
+        run: python3 scripts/check_audit_waivers.py
+
+      - name: npm advisories
+        run: pnpm audit --audit-level moderate
+
+      - uses: astral-sh/setup-uv@v7
+
+      # uv has no advisory database of its own. This asserts the lockfile is
+      # current with pyproject.toml, so a dependency cannot be added without
+      # being locked. Python advisories come from Dependabot.
+      - name: python lockfile is current
+        working-directory: apps/api
+        run: uv lock --check
+
+  database:
+    name: database (baseline rebuilds from migrations alone)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Phase 1's exit criterion: a fresh database builds from migrations with no
+      # manual steps, and the end state is asserted rather than eyeballed. The
+      # assertions include an existence guard, because a count of zero rows about
+      # a table is indistinguishable from the table never having been created.
+      - name: baseline rebuilds and lands in the expected state
+        run: ./scripts/verify-baseline.sh

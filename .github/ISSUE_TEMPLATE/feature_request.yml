@@ -1,0 +1,66 @@
+name: Feature request
+description: Something Vega should do and does not
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time. You do not need to know how to build it,
+        and a half-formed idea in the right place is more useful than a polished
+        one in the wrong place.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is the problem?
+      description: >
+        The situation you are actually in, not the feature you have in mind.
+        "I cannot tell which batch a return came from" is more useful than
+        "add a traceability report", because the first one leaves room for a
+        better answer than the one you were picturing.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like it to do?
+      description: Your idea, if you have one. Leave it blank if you do not.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part of Vega?
+      description: A guess is fine, and it can be changed later.
+      options:
+        - Stock and traceability
+        - Sales and invoicing
+        - Purchasing
+        - Finance and VAT
+        - EU trade
+        - Product carbon
+        - Something else, or not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything about your situation that matters?
+      description: >
+        Optional, and useful. Whether you run a real business on something like
+        this, roughly how many people and SKUs, and whether you are VAT
+        registered. The target user for Vega is currently a hypothesis with no
+        customer discovery behind it, so a sentence about a real business is
+        worth a lot here.
+
+  - type: checkboxes
+    id: checked
+    attributes:
+      label: Before submitting
+      options:
+        - label: >
+            I checked SPEC.md, in case this is specified but not yet built. If
+            it is, that is worth saying rather than closing the issue.
+        - label: I searched open issues for the same idea.

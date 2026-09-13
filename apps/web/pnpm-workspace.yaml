@@ -1,0 +1,9 @@
+# apps/web is its own pnpm root as well as a member of the repo's workspace, so
+# this file has to repeat the root's build decision. It shipped in #4 reading
+# "set this to true or false", a placeholder nobody replaced, which made every
+# pnpm command run from inside apps/web die with ERR_PNPM_IGNORED_BUILDS. CI
+# never saw it because CI installs from the repo root and uses --filter.
+#
+# esbuild's postinstall places the platform binary; nothing else needs one.
+allowBuilds:
+  esbuild: true
