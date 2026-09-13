@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Check that relative links in Markdown files resolve to existing files."""
+"""Check that relative links in Markdown files resolve to existing files.
+
+Anchors are not checked on purpose: GitHub heading-slug rules make that
+fiddly, and this repository has already been bitten by gates that went slow
+or flaky because they reached the network. External URLs, mailto links, and
+fragment-only links are therefore skipped rather than resolved, so the gate
+stays local and dependable. Links into files that do not exist are the only
+thing this catches."""
 
 from __future__ import annotations
 
