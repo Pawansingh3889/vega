@@ -67,3 +67,22 @@ def test_a_quoted_closing_keyword_still_counts() -> None:
     """
     body = 'This PR closes #68. #60 said "Closes #38", and connected to nothing.'
     assert check_claim.claimed_issues(body) == {68, 38}
+
+
+def test_a_bot_author_is_recognised_by_its_flag() -> None:
+    assert check_claim.is_bot({"login": "dependabot", "is_bot": True})
+
+
+def test_a_bot_author_is_recognised_by_its_login_suffix() -> None:
+    # gh does not always report is_bot, so the suffix is the stable signal.
+    assert check_claim.is_bot({"login": "dependabot[bot]"})
+
+
+def test_a_person_is_not_a_bot() -> None:
+    assert not check_claim.is_bot({"login": "Pawansingh3889", "is_bot": False})
+
+
+def test_a_missing_author_is_not_a_bot() -> None:
+    # A bot slipping through would skip the duplicate check, so this defaults
+    # to treating an unknown author as a person.
+    assert not check_claim.is_bot({})
