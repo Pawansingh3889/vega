@@ -6,6 +6,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Fixed
+- The landing page no longer offers a support email and phone number that
+  belong to the upstream fork. `support@rigelinventory.com` and the
+  unfilled `+91-XXXX-XXXXXX` placeholder are replaced with links to GitHub
+  Discussions and `SUPPORT.md`, since Vega has no support email or phone
+  line and inventing one would be worse than the placeholder it replaces.
 - The claim check no longer blocks work it was never meant to. It refused every
   Dependabot pull request, because a bot does not write `Closes #<n>` and never
   will, and it refused every pull request against an issue carrying no `lane:`
