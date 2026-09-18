@@ -6,6 +6,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Fixed
+- `apps/web` is on `vitest@4.1.11`, clearing
+  [GHSA-82fw-gwwq-j7x9](https://github.com/advisories/GHSA-82fw-gwwq-j7x9) (a
+  path traversal in `@vitest/mocker`'s redirect mock) ahead of the waiver's
+  11 December 2026 expiry. No config or test changes were needed: all 83
+  tests pass unchanged. The waiver is removed from both
+  `security/audit-waivers.json` and `pnpm-workspace.yaml`'s
+  `auditConfig.ignoreGhsas`, and `pnpm audit --audit-level moderate` now
+  passes with no waiver in force.
 - The claim check no longer blocks work it was never meant to. It refused every
   Dependabot pull request, because a bot does not write `Closes #<n>` and never
   will, and it refused every pull request against an issue carrying no `lane:`
