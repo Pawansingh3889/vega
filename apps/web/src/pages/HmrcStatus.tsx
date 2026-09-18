@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useBusinessAuth } from '@/hooks/useBusinessAuth';
 import { useCompany } from '@/contexts/CompanyContext';
 import { getHmrcStatus, type HmrcStatus } from '@/lib/hmrc/api';
+import { SourceNotice } from '@/components/ui/source-notice';
 
 export default function HmrcStatusPage() {
   const { user, loading: authLoading } = useAuth();
@@ -98,7 +99,7 @@ export default function HmrcStatusPage() {
 
   if (!isOwnerOrAdmin()) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-subtle p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-destructive/10 flex items-center justify-center">
@@ -110,6 +111,7 @@ export default function HmrcStatusPage() {
             </CardDescription>
           </CardHeader>
         </Card>
+        <SourceNotice />
       </div>
     );
   }
@@ -427,6 +429,7 @@ export default function HmrcStatusPage() {
           </CardContent>
         </Card>
       </div>
+      <SourceNotice />
     </div>
   );
 }

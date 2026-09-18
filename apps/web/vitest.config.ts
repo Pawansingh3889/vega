@@ -10,6 +10,13 @@ export default defineConfig({
   resolve: {
     alias: { "@": resolve(__dirname, "./src") },
   },
+  // vite.config.ts's own `define` for __VEGA_BUILD_COMMIT__ does not apply
+  // here: vitest reads this file, not vite.config.ts. Repeated so a future
+  // component test that imports source-notice.tsx doesn't hit a
+  // ReferenceError for a global that only vite.config.ts knows about.
+  define: {
+    __VEGA_BUILD_COMMIT__: JSON.stringify("test"),
+  },
   test: {
     // jsdom, not node: the collector reads window, navigator and localStorage,
     // and stubbing all three by hand would be testing the stubs.

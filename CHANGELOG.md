@@ -17,6 +17,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   are the parts that earn their keep, are unchanged.
 
 ### Added
+- Every authenticated screen (`/dashboard`, `/vat`, `/hmrc/status`) now offers
+  the source of the version actually running, per AGPL-3.0 section 13: a
+  quiet footer line linking to `github.com/Pawansingh3889/vega` and naming
+  the build's own commit. Vite injects the commit at build time via
+  `git rev-parse --short HEAD`, falling back to "unknown" when no `.git`
+  directory is available, which a container build often lacks.
 - Added `scripts/check-links.py` to the gate to catch relative Markdown links that point to missing files.
 - **`LICENSE`: GNU AGPL-3.0.** The repository had no licence file, which meant
   nobody could legally use or contribute to it. AGPL rather than a permissive
