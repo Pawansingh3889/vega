@@ -737,7 +737,21 @@ const Index = () => {
                 ✓ No credit card required  ✓ Full feature access  ✓ Dedicated onboarding support  ✓ Cancel anytime
               </p>
               <p className="text-sm font-semibold text-foreground">
-                Questions? Email us at support@rigelinventory.com or call +91-XXXX-XXXXXX
+                Questions?{' '}
+                <a
+                  href="https://github.com/Pawansingh3889/vega/discussions"
+                  className="underline hover:text-primary transition-colors"
+                >
+                  Ask in GitHub Discussions
+                </a>
+                , or see{' '}
+                <a
+                  href="https://github.com/Pawansingh3889/vega/blob/main/SUPPORT.md"
+                  className="underline hover:text-primary transition-colors"
+                >
+                  SUPPORT.md
+                </a>{' '}
+                for where each kind of question goes.
               </p>
             </div>
           </div>
