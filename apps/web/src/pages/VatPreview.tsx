@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCompany } from '@/contexts/CompanyContext';
 import { Loader2, Receipt } from 'lucide-react';
 import { required } from '@/integrations/supabase/client';
+import { SourceNotice } from '@/components/ui/source-notice';
 
 // The API service's origin. See scripts/deploy-api.sh, which prints this same
 // value, and the connect-src entries in index.html and public/_headers: a
@@ -148,7 +149,8 @@ export default function VatPreview() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4">
+    <div className="min-h-screen flex flex-col bg-gradient-subtle p-4">
+      <div className="flex-1 flex items-center justify-center">
       <div className="w-full max-w-2xl">
         <Card className="shadow-elevated">
           <CardHeader className="text-center">
@@ -288,6 +290,8 @@ export default function VatPreview() {
           </CardContent>
         </Card>
       </div>
+      </div>
+      <SourceNotice />
     </div>
   );
 }

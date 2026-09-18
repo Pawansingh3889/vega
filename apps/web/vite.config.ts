@@ -1,8 +1,25 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { execFileSync } from "node:child_process";
 
 import { devOrigins, widenConnectSrc } from "./src/lib/devCsp";
+
+// The commit actually running, for the AGPL section 13 source offer (see
+// SourceNotice.tsx): "the source of your version" means this build's commit,
+// not whatever main happens to be when someone reads the link. A container
+// build often ships without a .git directory, so this falls back to
+// "unknown" rather than failing the build over a notice that is best-effort
+// by nature.
+function buildCommit(): string {
+  try {
+    return execFileSync("git", ["rev-parse", "--short", "HEAD"], {
+      encoding: "utf8",
+    }).trim();
+  } catch {
+    return "unknown";
+  }
+}
 
 // index.html carries its own <meta http-equiv="Content-Security-Policy">,
 // the shipped production policy, SEPARATE from the response header this file
@@ -80,6 +97,9 @@ export default defineConfig(({ mode }) => {
     // while the app still saw nothing, which is exactly the blank page this
     // change is fixing.
     envDir,
+    define: {
+      __VEGA_BUILD_COMMIT__: JSON.stringify(buildCommit()),
+    },
     server: {
       host: "::",
       port: 8080,

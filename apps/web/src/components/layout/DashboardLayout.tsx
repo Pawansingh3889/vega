@@ -7,6 +7,7 @@ import { useBusinessAuth } from '@/hooks/useBusinessAuth';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
+import { SourceNotice } from '@/components/ui/source-notice';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -78,12 +79,13 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           onNavigate={onNavigate}
           className="hidden md:flex flex-shrink-0 sticky top-0 h-screen z-40"
         />
-        <main className={cn('flex-1 bg-gradient-subtle', className)}>
-          <div className="section-padding content-container">
+        <main className={cn('flex-1 bg-gradient-subtle flex flex-col', className)}>
+          <div className="section-padding content-container flex-1">
             <div className="animate-fade-up">
               {children}
             </div>
           </div>
+          <SourceNotice />
         </main>
       </div>
       <aside aria-label="current-user" className="hidden lg:block fixed left-4 bottom-4 text-xs text-muted-foreground bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border border-border rounded-md px-3 py-2 shadow z-50">
