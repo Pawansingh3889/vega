@@ -6,6 +6,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Fixed
+- `make debt` no longer crashes when pnpm writes a `[WARN]` line to stdout
+  before eslint's JSON report (typically on a slow or cold registry).
+  `scripts/lint-debt.mjs` used to find the JSON's start by scanning stdout
+  for the first `[`, which matched `[WARN]` instead of the report and made
+  `JSON.parse` throw on a line of prose. It now has eslint write the report
+  straight to a temp file with `--output-file` and reads that, so pnpm's
+  chatter never has a chance to mix in.
 - The claim check no longer blocks work it was never meant to. It refused every
   Dependabot pull request, because a bot does not write `Closes #<n>` and never
   will, and it refused every pull request against an issue carrying no `lane:`
